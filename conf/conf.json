@@ -1,0 +1,19 @@
+{
+    "about": [
+        {
+            "profile": "flachica",
+            "role": "Autor",
+            "name": "Fernando"
+        },
+        {
+            "profile": "estaamonestado",
+            "role": "Diseño",
+            "name": "Lusimi"
+        },
+        {
+            "profile": "EnriqueM2000",
+            "role": "Tester",
+            "name": "Enrique"
+        }
+    ]
+}

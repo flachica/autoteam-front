@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Evita el scroll en el contenedor principal */
+}
+
+#root,
+#__next {
+  height: 100%;
+}
+
+.main-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: 60px; /* Ajusta esta altura según la altura real de tu TopBar */
+  flex-shrink: 0;
+}
+
+.scrollable-content {
+  flex-grow: 1;
+  overflow-y: auto; /* Permite el scroll en los hijos */
+}
+
+.loader {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #4f46e5;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* table design */
+
+.cash-list-section {
+  margin-top: 40px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.cash-list-section table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cash-list-section th,
+.cash-list-section td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+@media (max-width: 600px) {
+  .cash-list-section table,
+  .cash-list-section thead,
+  .cash-list-section tbody,
+  .cash-list-section th,
+  .cash-list-section td,
+  .cash-list-section tr {
+    display: block;
+  }
+
+  .cash-list-section thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  .cash-list-section tr {
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+  }
+
+  .cash-list-section td {
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    white-space: normal;
+    text-align: left;
+  }
+
+  .cash-list-section td:before {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    width: 45%;
+    padding-right: 10px;
+    white-space: nowrap;
+    content: attr(data-label);
+    font-weight: bold;
+  }
+
+  .cash-list-section td.empty {
+    height: 0;
+    padding: 0;
+    border: none;
+  }
+}
+
+/* end table design */
+
+li.invited {
+  background-color: #b4b21c;
+  font-style: italic;
+}
+li.anonInvited {
+  background-color: #bea69c;
+  font-style: italic;  
+}
+
+li.my-player {
+  background-color: #4f46e5;
+  color: white;
+}
