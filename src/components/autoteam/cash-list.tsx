@@ -226,7 +226,7 @@ const CashList: React.FC<CashList> = ({ onSuccess, forAdmin, player: initialData
               {paginatedMovements && paginatedMovements.items && paginatedMovements.items.map((movement) => (
                 <TableRow key={movement.id}>
                   {isDebugging && <TableCell>{movement.id}</TableCell>}
-                  <TableCell>{format(new Date(movement.date), 'dd/MM/yyyy HH:mm:ss')}</TableCell>
+                  <TableCell>{format(movement.date, 'dd/MM/yyyy HH:mm:ss')}</TableCell>
                   {forAdmin && <TableCell align="center">{movement.player?.name} {movement.player?.surname}</TableCell>}
                   {forAdmin && <TableCell align="center">{movement.player?.balance}</TableCell>}
                   <TableCell align="right" className={movement.type === 'in' ? '' : 'empty'}>
