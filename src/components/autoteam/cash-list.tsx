@@ -3,7 +3,6 @@
 import React, { useState, useEffect, use } from 'react';
 import { Player } from '../../models/player';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TablePagination, Button, TextField, Box, IconButton, Typography, LinearProgress, useMediaQuery, useTheme } from '@mui/material';
-import { format } from 'date-fns';
 import { PlayerService } from '../../services/playerService';
 import { usePlayer } from '../../app/player.context';
 import ErrorCard from '../generics/errorCard';
@@ -22,6 +21,21 @@ interface CashList {
   forAdmin?: boolean;
   onSuccess: () => void;
 }
+
+import { parseISO, format } from 'date-fns';
+
+// Función para limpiar y parsear la fecha
+const parseAndFormatDate = (dateString: string): string => {
+  // Extraer la parte de la fecha y la hora
+  const [datePart, timePart] = dateString.split('Z');
+  const cleanedDateString = `${datePart}Z`;
+
+  // Parsear la fecha
+  const parsedDate = parseISO(cleanedDateString);
+
+  // Formatear la fecha
+  return format(parsedDate, 'dd/MM/yyyy HH:mm:ss');
+};
 
 const CashList: React.FC<CashList> = ({ onSuccess, forAdmin, player: initialData }) => {
   const [error, setError] = useState<string | null>(null);
@@ -226,7 +240,7 @@ const CashList: React.FC<CashList> = ({ onSuccess, forAdmin, player: initialData
               {paginatedMovements && paginatedMovements.items && paginatedMovements.items.map((movement) => (
                 <TableRow key={movement.id}>
                   {isDebugging && <TableCell>{movement.id}</TableCell>}
-                  <TableCell>{format(movement.date, 'dd/MM/yyyy HH:mm:ss')}</TableCell>
+                  <TableCell>{parseAndFormatDate(movement.date)}</TableCell>
                   {forAdmin && <TableCell align="center">{movement.player?.name} {movement.player?.surname}</TableCell>}
                   {forAdmin && <TableCell align="center">{movement.player?.balance}</TableCell>}
                   <TableCell align="right" className={movement.type === 'in' ? '' : 'empty'}>
