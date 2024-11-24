@@ -397,126 +397,6 @@ const AdminHomePage: React.FC = () => {
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card>
-          <CardContent className="flex flex-col items-center">
-            <div className="flex items-center mb-4">
-                <PeopleIcon fontSize="large" className="mr-4" />
-                <Typography variant="h5" component="div">
-                  Usuarios
-                </Typography>
-              </div>
-              <TextField
-                  label="Filtrar"
-                  variant="outlined"
-                  value={filter}
-                onChange={handleFilterChange}
-                fullWidth
-                  className="my-4"
-              />
-              <div className="w-full"  style={{ height: '400px', overflow: 'auto' }}>
-                <Table stickyHeader>
-                  <TableHead>
-                    <TableRow>
-                    {isDebugging && (
-                        <TableCell>
-                          <TableSortLabel
-                            active={sortConfig?.key === 'id'}
-                            direction={sortConfig?.key === 'id' ? sortConfig.direction : 'asc'}
-                            onClick={() => requestSort('id')}
-                          >
-                            ID
-                          </TableSortLabel>
-                        </TableCell>
-                      )}
-                      <TableCell><TableSortLabel
-                          active={sortConfig?.key === 'name'}
-                          direction={sortConfig?.key === 'name' ? sortConfig.direction : 'asc'}
-                          onClick={() => requestSort('name')}
-                        >
-                          Nombre
-                        </TableSortLabel></TableCell>
-                      <TableCell><TableSortLabel
-                          active={sortConfig?.key === 'surname'}
-                          direction={sortConfig?.key === 'surname' ? sortConfig.direction : 'asc'}
-                          onClick={() => requestSort('surname')}
-                        >
-                          Apellido
-                        </TableSortLabel></TableCell>
-                      <TableCell><TableSortLabel
-                          active={sortConfig?.key === 'phone'}
-                          direction={sortConfig?.key === 'phone' ? sortConfig.direction : 'asc'}
-                          onClick={() => requestSort('phone')}
-                        >
-                          Teléfono
-                      </TableSortLabel></TableCell>
-                      <TableCell><TableSortLabel
-                          active={sortConfig?.key === 'email'}
-                          direction={sortConfig?.key === 'email' ? sortConfig.direction : 'asc'}
-                          onClick={() => requestSort('email')}
-                        >
-                          EMail
-                        </TableSortLabel></TableCell>
-
-                        <TableCell><TableSortLabel
-                          active={sortConfig?.key === 'balance'}
-                          direction={sortConfig?.key === 'balance' ? sortConfig.direction : 'asc'}
-                          onClick={() => requestSort('balance')}
-                        >
-                          Saldo
-                        </TableSortLabel></TableCell>
-                        <TableCell><TableSortLabel
-                          active={sortConfig?.key === 'balance'}
-                          direction={sortConfig?.key === 'balance' ? sortConfig.direction : 'asc'}
-                          onClick={() => requestSort('balance')}
-                        >
-                          Saldo futuro
-                        </TableSortLabel></TableCell>
-                      <TableCell>
-                          Resetear clave
-                      </TableCell>
-                      <TableCell>
-                          Editar jugador
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {filteredPlayers.map(player => (
-                      <TableRow key={player.id}>
-                        {isDebugging && (<TableCell>{player.id}</TableCell>)}
-                        <TableCell>{player.name}</TableCell>
-                        <TableCell>{player.surname}</TableCell>
-                        <TableCell>{player.phone}</TableCell>
-                        <TableCell>{player.email}</TableCell>
-                        <TableCell>{player.balance}</TableCell>
-                        <TableCell>{player.futureBalance}</TableCell>
-                        <TableCell>
-                          <Button
-                            variant="contained"
-                            color={"error"}
-                            onClick={() => handleResetDialogOpenPopup(player)}
-                          >
-                            Resetear clave
-                          </Button>
-                        </TableCell>
-                        <TableCell>
-                          <Button
-                            variant="contained"
-                            color={"success"}
-                            onClick={() => handleEditPlayerDialogOpenPopup(player)}
-                          >
-                            Editar
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Card>
             <CardContent className="flex flex-col items-center">
               <div className="flex items-center mb-4">
                 <EventIcon fontSize="large" className="mr-4" />
@@ -615,59 +495,6 @@ const AdminHomePage: React.FC = () => {
           <Card>
             <CardContent className="flex flex-col items-center">
               <div className="flex items-center mb-4">
-                <AccessTimeIcon fontSize="large" className="mr-4" />
-                <Typography variant="h5" component="div">
-                  Horarios
-                </Typography>
-              </div>
-              <div className="w-full" style={{ height: '200px', overflow: 'auto' }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Nombre</TableCell>
-                    <TableCell>Lunes</TableCell>
-                    <TableCell>Martes</TableCell>
-                    <TableCell>Miércoles</TableCell>
-                    <TableCell>Jueves</TableCell>
-                    <TableCell>Viernes</TableCell>
-                    <TableCell>Sábado</TableCell>
-                    <TableCell>Domingo</TableCell>
-                    <TableCell>Activo</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {groupedHours && groupedHours.map(group => (
-                    <TableRow key={group.id}>
-                      <TableCell>{group.group_name}</TableCell>
-                      {group.days.map(day => (
-                        <TableCell key={day.day_name}>
-                          {day.hours.sort((a, b) => a.index - b.index).map(hour => (
-                            <div key={hour.id}>
-                              {hour.name} - {hour.price}€
-                            </div>
-                          ))}
-                        </TableCell>
-                      ))}
-                      <TableCell>
-                        <Switch
-                          checked={group.active}
-                          onChange={() => handleToggleActive(group.id, group.active)}
-                          color="primary"
-                        />
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              </div>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Card>
-            <CardContent className="flex flex-col items-center">
-              <div className="flex items-center mb-4">
                 <EventAvailableIcon fontSize="large" className="mr-4" />
                 <Typography variant="h5" component="div">
                   Abrir semana
@@ -717,6 +544,179 @@ const AdminHomePage: React.FC = () => {
                 Abrir semana
               </Button>
             </form>
+              </div>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Card>
+            <CardContent className="flex flex-col items-center">
+              <div className="flex items-center mb-4">
+                  <PeopleIcon fontSize="large" className="mr-4" />
+                  <Typography variant="h5" component="div">
+                    Usuarios
+                  </Typography>
+                </div>
+                <TextField
+                    label="Filtrar"
+                    variant="outlined"
+                    value={filter}
+                  onChange={handleFilterChange}
+                  fullWidth
+                    className="my-4"
+                />
+                <div className="w-full"  style={{ height: '400px', overflow: 'auto' }}>
+                  <Table stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                      {isDebugging && (
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortConfig?.key === 'id'}
+                              direction={sortConfig?.key === 'id' ? sortConfig.direction : 'asc'}
+                              onClick={() => requestSort('id')}
+                            >
+                              ID
+                            </TableSortLabel>
+                          </TableCell>
+                        )}
+                        <TableCell><TableSortLabel
+                            active={sortConfig?.key === 'name'}
+                            direction={sortConfig?.key === 'name' ? sortConfig.direction : 'asc'}
+                            onClick={() => requestSort('name')}
+                          >
+                            Nombre
+                          </TableSortLabel></TableCell>
+                        <TableCell><TableSortLabel
+                            active={sortConfig?.key === 'surname'}
+                            direction={sortConfig?.key === 'surname' ? sortConfig.direction : 'asc'}
+                            onClick={() => requestSort('surname')}
+                          >
+                            Apellido
+                          </TableSortLabel></TableCell>
+                        <TableCell><TableSortLabel
+                            active={sortConfig?.key === 'phone'}
+                            direction={sortConfig?.key === 'phone' ? sortConfig.direction : 'asc'}
+                            onClick={() => requestSort('phone')}
+                          >
+                            Teléfono
+                        </TableSortLabel></TableCell>
+                        <TableCell><TableSortLabel
+                            active={sortConfig?.key === 'email'}
+                            direction={sortConfig?.key === 'email' ? sortConfig.direction : 'asc'}
+                            onClick={() => requestSort('email')}
+                          >
+                            EMail
+                          </TableSortLabel></TableCell>
+
+                          <TableCell><TableSortLabel
+                            active={sortConfig?.key === 'balance'}
+                            direction={sortConfig?.key === 'balance' ? sortConfig.direction : 'asc'}
+                            onClick={() => requestSort('balance')}
+                          >
+                            Saldo
+                          </TableSortLabel></TableCell>
+                          <TableCell><TableSortLabel
+                            active={sortConfig?.key === 'balance'}
+                            direction={sortConfig?.key === 'balance' ? sortConfig.direction : 'asc'}
+                            onClick={() => requestSort('balance')}
+                          >
+                            Saldo futuro
+                          </TableSortLabel></TableCell>
+                        <TableCell>
+                            Resetear clave
+                        </TableCell>
+                        <TableCell>
+                            Editar jugador
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {filteredPlayers.map(player => (
+                        <TableRow key={player.id}>
+                          {isDebugging && (<TableCell>{player.id}</TableCell>)}
+                          <TableCell>{player.name}</TableCell>
+                          <TableCell>{player.surname}</TableCell>
+                          <TableCell>{player.phone}</TableCell>
+                          <TableCell>{player.email}</TableCell>
+                          <TableCell>{player.balance}</TableCell>
+                          <TableCell>{player.futureBalance}</TableCell>
+                          <TableCell>
+                            <Button
+                              variant="contained"
+                              color={"error"}
+                              onClick={() => handleResetDialogOpenPopup(player)}
+                            >
+                              Resetear clave
+                            </Button>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="contained"
+                              color={"success"}
+                              onClick={() => handleEditPlayerDialogOpenPopup(player)}
+                            >
+                              Editar
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Card>
+            <CardContent className="flex flex-col items-center">
+              <div className="flex items-center mb-4">
+                <AccessTimeIcon fontSize="large" className="mr-4" />
+                <Typography variant="h5" component="div">
+                  Horarios
+                </Typography>
+              </div>
+              <div className="w-full" style={{ height: '200px', overflow: 'auto' }}>
+              <Table stickyHeader>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Nombre</TableCell>
+                    <TableCell>Lunes</TableCell>
+                    <TableCell>Martes</TableCell>
+                    <TableCell>Miércoles</TableCell>
+                    <TableCell>Jueves</TableCell>
+                    <TableCell>Viernes</TableCell>
+                    <TableCell>Sábado</TableCell>
+                    <TableCell>Domingo</TableCell>
+                    <TableCell>Activo</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {groupedHours && groupedHours.map(group => (
+                    <TableRow key={group.id}>
+                      <TableCell>{group.group_name}</TableCell>
+                      {group.days.map(day => (
+                        <TableCell key={day.day_name}>
+                          {day.hours.sort((a, b) => a.index - b.index).map(hour => (
+                            <div key={hour.id}>
+                              {hour.name} - {hour.price}€
+                            </div>
+                          ))}
+                        </TableCell>
+                      ))}
+                      <TableCell>
+                        <Switch
+                          checked={group.active}
+                          onChange={() => handleToggleActive(group.id, group.active)}
+                          color="primary"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
               </div>
             </CardContent>
           </Card>
