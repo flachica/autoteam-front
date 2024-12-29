@@ -81,6 +81,19 @@ const CourtItem: React.FC<CourtItemProps> = ({ court, myPlayer, openDialog, open
     return null;
   };
 
+  const renderCourtRemoveButton = () => {
+    if (myPlayer?.role === 'admin' && court.court_state === 'opened') {
+      return (
+        <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700 text-center">
+          <Button variant="contained" fullWidth color="error" startIcon={<RemoveCircleOutlineIcon />}
+            onClick={() => openDialog({ message: 'Eliminar', data: court, name: OperationName.COURT_DELETE })}>
+          </Button>
+        </td>
+      );
+    }
+    return null;
+  };
+
   const renderInOutButton = (court: Court) => {
     let today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -138,6 +151,7 @@ const CourtItem: React.FC<CourtItemProps> = ({ court, myPlayer, openDialog, open
         <Box mt={2} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           {renderInOutButton(court)}
           {renderCourtReserveButton()}
+          {renderCourtRemoveButton()}
         </Box>
       </CardContent>
     </Card>
