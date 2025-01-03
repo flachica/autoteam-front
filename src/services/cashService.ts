@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { MonthlyCost } from '../models/monthly-cost';
 import {
   CreateMovementDto,
   Movement,
@@ -57,7 +58,25 @@ export class CashService {
     return result.data;
   }
 
-  async createMovement(myPlayer: Player, playerId: number, amount: number, message?: string, validated?: boolean): Promise<Movement[]> {
+  async getAllMonthlyCost(token: string | undefined): Promise<MonthlyCost[]> {
+    const result = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/cash/monthly-cost`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return result.data;
+  }
+
+  async createMovement(
+    myPlayer: Player,
+    playerId: number,
+    amount: number,
+    message?: string,
+    validated?: boolean,
+  ): Promise<Movement[]> {
     const createMovement: CreateMovementDto = {
       amount: amount,
       playerId: playerId,
@@ -74,6 +93,37 @@ export class CashService {
       },
     );
     return result.data;
+  }
+
+  async monthlyCostProrrate(
+    monthlyCostInfo: MonthlyCost,
+    token: string,
+  ): Promise<Object> {
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/cash/monthly-cost`,
+      monthlyCostInfo,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
+  }
+
+  async monthlyCostDelete(
+    monthlyCostId: number,
+    token: string,
+  ): Promise<Object> {
+    const response = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/cash/monthly-cost/${monthlyCostId}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data;
   }
 
   async validateMovement(token: string, movement: Movement): Promise<void> {

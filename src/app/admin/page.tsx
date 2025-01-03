@@ -21,9 +21,10 @@ import axios from 'axios';
 import { useIsDebugging } from '../debug.context';
 import { CashService } from '../../services/cashService';
 import { format } from 'date-fns/format';
-import { PaginatedMovements } from '../../models/movement';
 import PlayerList from '@/components/autoteam/player-list';
 import ProfileForm from '@/components/autoteam/profile-form';
+import { AccountBalance } from '@mui/icons-material';
+import { MonthlyCost } from '../../models/monthly-cost';
 
 const AdminHomePage: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -44,7 +45,8 @@ const AdminHomePage: React.FC = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
   const [editPlayerDialogOpen, setEditPlayerDialogOpen] = useState(false);
-  const [allMoves, setAllMoves] = useState<PaginatedMovements | null>(null);
+  const [monthlyCost, setMonthlyCost] = useState<MonthlyCost[]>([]);
+  const [sortConfigMonthlyCost, setSortConfigMonthlyCost] = useState<{ key: keyof MonthlyCost; direction: 'asc' | 'desc' } | null>({ key: 'id', direction: 'desc' });
   
   const playerService = new PlayerService();
   const courtService = new CourtService();
@@ -112,15 +114,10 @@ const AdminHomePage: React.FC = () => {
     fetchClubs();
   }, [myPlayer]);
 
-  const fetchAllMoves = async () => {
+  const fetchAllMonthlyCost = async () => {
     try {
-      let startDate = '',
-        endDate = '',
-        page = 0,
-        pageSize = 10;
-      
-      const response = await cashService.getAllMovements(myPlayer?.accessToken || '', startDate, endDate, page, pageSize);
-      setAllMoves(response);
+      const response = await cashService.getAllMonthlyCost(myPlayer?.accessToken || '');
+      setMonthlyCost(response);
     } catch (error) {
       manageMessageError(error);
     }
@@ -133,10 +130,9 @@ const AdminHomePage: React.FC = () => {
       setLoading(false);
       return;
     }
-    fetchAllMoves();
+    fetchAllMonthlyCost();
     setLoading(false);
   }, [myPlayer]);
-
 
   const handleCancelReservation = (reservationId: number) => {
     setReservationInProgress(null);
@@ -273,6 +269,23 @@ const AdminHomePage: React.FC = () => {
     setLoading(false);
   }
 
+  const handleMonthlyCostProrrate = async (year: number, month: number, amount: number) => {
+    setLoading(true);
+    try {
+      if (!myPlayer || !myPlayer.accessToken) {
+        setLoading(false);
+        return;
+      }
+      await cashService.monthlyCostProrrate({ year, month, amount }, myPlayer.accessToken);
+      await fetchAllMonthlyCost();
+      setErrorMessage('Costes mensuales repartidos correctamente');
+      setSnackbarOpen(true);
+    } catch (error) {
+      manageMessageError(error);
+    }
+    setLoading(false);
+  }
+
   function manageMessageError(error: any) {
     if (axios.isAxiosError(error)) {
       if (error.response && error.response.data && typeof error.response.data.message === 'string') {
@@ -350,6 +363,14 @@ const AdminHomePage: React.FC = () => {
     setSortConfig({ key, direction });
   };
 
+  const requestSortMonthlyCost = (key: keyof MonthlyCost) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfigMonthlyCost && sortConfigMonthlyCost.key === key && sortConfigMonthlyCost.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfigMonthlyCost({ key, direction });
+  };
+
   const requestSortReservation = (key: keyof Reservation) => {
     let direction: 'asc' | 'desc' = 'asc';
     if (sortReservationConfig && sortReservationConfig.key === key && sortReservationConfig.direction === 'asc') {
@@ -372,6 +393,12 @@ const AdminHomePage: React.FC = () => {
     hour: '',
   });
 
+  const [formMonthlyCostData, setMonthlyCostData] = useState({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth() + 1,
+    amount: 7.50,
+  });
+
   const handleChange = (e: any) => {
     const { name, value } = e.target;
     setFormData({
@@ -380,10 +407,40 @@ const AdminHomePage: React.FC = () => {
     });
   };
 
+  const handleMonthlyCostChange = (e: any) => {
+    const { name, value } = e.target;
+    
+    if (name === 'amount') {
+      // Reemplazar coma por punto si existe
+      const normalizedValue = value.replace(',', '.');
+      // Verificar si es un número válido con decimales
+      const isValidDecimal = /^\d*\.?\d*$/.test(normalizedValue);
+      
+      setMonthlyCostData({
+        ...formMonthlyCostData,
+        [name]: isValidDecimal ? normalizedValue : value
+      });
+      return;
+    }
+
+    // Para campos no-amount, convertir a entero
+    const transformedValue = parseInt(value, 10);
+    setMonthlyCostData({
+      ...formMonthlyCostData,
+      [name]: transformedValue || value
+    });
+};
+
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const { date, clubId, hour } = formData;
     handleOpenWeek(date, clubId, hour);
+  };
+
+  const handleMonthlyCostSubmit = (e: any) => {
+    e.preventDefault();
+    const { year, month, amount } = formMonthlyCostData;
+    handleMonthlyCostProrrate(year, month, amount);
   };
 
   
@@ -545,6 +602,131 @@ const AdminHomePage: React.FC = () => {
               </Button>
             </form>
               </div>
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Card>
+            <CardContent className="flex flex-col items-center">
+              <div className="flex items-center mb-4">
+                <AccountBalance fontSize="large" className="mr-4" />
+                <Typography variant="h5" component="div">
+                  Repartir costes mensuales
+                </Typography>
+              </div>
+              <div className="w-full text-center p-10" style={{ height: '400px', overflow: 'auto' }}>
+              <form onSubmit={handleMonthlyCostSubmit} className="w-full">
+                  <TextField
+                    name="year"
+                    type="integer"
+                    value={formMonthlyCostData.year}
+                    onChange={handleMonthlyCostChange}
+                    fullWidth
+                    margin="normal"
+                    label='Año'
+                  />
+                  <TextField
+                    label="Mes"
+                    name="month"
+                    value={formMonthlyCostData.month}
+                    onChange={handleMonthlyCostChange}
+                    fullWidth
+                    margin="normal"
+                      />
+                  <TextField
+                    label="Coste"
+                    name="amount"
+                    value={formMonthlyCostData.amount}
+                    onChange={handleMonthlyCostChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    startIcon={<EventAvailableIcon />}
+                    fullWidth
+                  >
+                    Repartir costes mensuales
+                  </Button>
+                </form>
+              </div>
+              <div className="w-full"  style={{ height: '400px', overflow: 'auto' }}>
+                  <Table stickyHeader>
+                    <TableHead>
+                      <TableRow>
+                      {isDebugging && (
+                          <TableCell>
+                            <TableSortLabel
+                              active={sortConfig?.key === 'id'}
+                              direction={sortConfig?.key === 'id' ? sortConfig.direction : 'asc'}
+                              onClick={() => requestSortMonthlyCost('id')}
+                            >
+                              ID
+                            </TableSortLabel>
+                          </TableCell>
+                        )}
+                        <TableCell><TableSortLabel
+                            active={sortConfigMonthlyCost?.key === 'year'}
+                            direction={sortConfigMonthlyCost?.key === 'year' ? sortConfigMonthlyCost.direction : 'asc'}
+                            onClick={() => requestSortMonthlyCost('year')}
+                          >
+                            Año
+                          </TableSortLabel></TableCell>
+                        <TableCell><TableSortLabel
+                            active={sortConfigMonthlyCost?.key === 'month'}
+                            direction={sortConfigMonthlyCost?.key === 'month' ? sortConfigMonthlyCost.direction : 'asc'}
+                            onClick={() => requestSortMonthlyCost('month')}
+                          >
+                            Mes
+                          </TableSortLabel></TableCell>
+                        <TableCell><TableSortLabel
+                            active={sortConfigMonthlyCost?.key === 'amount'}
+                            direction={sortConfigMonthlyCost?.key === 'amount' ? sortConfigMonthlyCost.direction : 'asc'}
+                            onClick={() => requestSortMonthlyCost('amount')}
+                          >
+                            Coste
+                          </TableSortLabel></TableCell>
+                          <TableCell><TableSortLabel
+                            active={sortConfigMonthlyCost?.key === 'description'}
+                            direction={sortConfigMonthlyCost?.key === 'description' ? sortConfigMonthlyCost.direction : 'asc'}
+                            onClick={() => requestSortMonthlyCost('description')}
+                          >
+                            Descripción
+                          </TableSortLabel></TableCell>
+                        <TableCell>
+                            Eliminar
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {monthlyCost.map(monthlyCost => (
+                        <TableRow key={monthlyCost.id}>
+                          {isDebugging && (<TableCell>{monthlyCost.id}</TableCell>)}
+                          <TableCell>{monthlyCost.year}</TableCell>
+                          <TableCell>{monthlyCost.month}</TableCell>
+                          <TableCell>{monthlyCost.amount}</TableCell>
+                          <TableCell>{monthlyCost.description}</TableCell>
+                          <TableCell>
+                            <Button
+                              variant="contained"
+                              color={"error"}
+                              onClick={async () => {
+                                await cashService.monthlyCostDelete(monthlyCost.id ?? 0, myPlayer?.accessToken || '');
+                                await fetchAllMonthlyCost();
+                              }
+                              }
+                            >
+                              Eliminar
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
             </CardContent>
           </Card>
         </Grid>
