@@ -35,11 +35,11 @@ const Login = () => {
     try {
       const formData = new FormData(event.currentTarget as HTMLFormElement);
       const res = await signIn('credentials', {
-          email: formData.get("username"),
-          phone: formData.get("username"),
-          password: formData.get("password"),
-          redirect: false,
-        });
+        email: formData.get("username"),
+        phone: formData.get("username"),
+        password: formData.get("password"),
+        redirect: false,
+      });
       if (res?.error) {
         setError("Usuario o contraseña incorrectos. Recuerda que debes esperar a que tu cuenta sea validada");
       };
@@ -67,57 +67,59 @@ const Login = () => {
     try {
       await signIn('google', { callbackUrl: '/home' });
     } catch (error) {
-      setError("Error al iniciar sesión con Google");      
+      setError("Error al iniciar sesión con Google");
     }
     setIsRefreshing(false);
   };
 
   const handleEmailSignIn = async (event: React.MouseEvent<HTMLButtonElement>) => {
-      setIsRefreshing(true);
-      try {
-        if (!email) {
-          setError("Debes introducir un correo electrónico");
-          setMessage("");
-          setIsRefreshing(false);
-          return;
-        } else {
-          await playerService.sendMagicLink(email as string);
-          setError("");
-          setMessage("Revise su bandeja de entrada para iniciar sesión"); 
-        }
-      } catch (error: any) {
-        if (isAxiosError(error)) {
-          const axiosError = error as AxiosError;
-          if (axiosError.response && axiosError.response.data && typeof axiosError.response.data === 'object' && 'message' in axiosError.response.data) {
-            if (typeof axiosError.response.data.message === 'string') {
-              setError(axiosError.response.data.message as string);
-            } else {
-              const errorMessage = axiosError.response.data.message || '';
-              if (typeof errorMessage === 'object' && 'message' in errorMessage) {
-                setError((errorMessage.message as string[])[0]);
-              } else {
-                setError("Ocurrió un error inesperado");
-              }
-            }
-          } else if (axiosError.response) {
-            setError(`${JSON.stringify(axiosError.response.data) || axiosError.message}`);
-          } else {
-            setError(axiosError.message as unknown as string);
-          }
-        } else {
-          setError("Ocurrió un error inesperado");
-        }
-        setIsRefreshing(false);
+    setIsRefreshing(true);
+    try {
+      if (!email) {
+        setError("Debes introducir un correo electrónico");
         setMessage("");
-      }      
+        setIsRefreshing(false);
+        return;
+      } else {
+        await playerService.sendMagicLink(email as string);
+        setError("");
+        setMessage("Revise su bandeja de entrada para iniciar sesión");
+      }
+    } catch (error: any) {
+      if (isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        if (axiosError.response && axiosError.response.data && typeof axiosError.response.data === 'object' && 'message' in axiosError.response.data) {
+          if (typeof axiosError.response.data.message === 'string') {
+            setError(axiosError.response.data.message as string);
+          } else {
+            const errorMessage = axiosError.response.data.message || '';
+            if (typeof errorMessage === 'object' && 'message' in errorMessage) {
+              setError((errorMessage.message as string[])[0]);
+            } else {
+              setError("Ocurrió un error inesperado");
+            }
+          }
+        } else if (axiosError.response) {
+          setError(`${JSON.stringify(axiosError.response.data) || axiosError.message}`);
+        } else {
+          setError(axiosError.message as unknown as string);
+        }
+      } else {
+        setError("Ocurrió un error inesperado");
+      }
       setIsRefreshing(false);
-      return;
-    };
+      setMessage("");
+    }
+    setIsRefreshing(false);
+    return;
+  };
 
   return (
     <section className="w-full h-screen flex items-center justify-center bg-gray-100">
       {isRefreshing && <LinearProgress className="absolute top-0 left-0 w-full" />}
       <form
+        action="#"
+        method="POST"
         className="text-gray-700 bg-white p-8 rounded-lg shadow-lg w-full max-w-md border rounded"
         onSubmit={handleSignIn}
       >
@@ -127,17 +129,17 @@ const Login = () => {
           </div>
         )}
         {
-          error && 
+          error &&
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative flex items-center justify-between" role="alert">
-              <span className="block sm:inline">{error}</span>
-            </div>        
+            <span className="block sm:inline">{error}</span>
+          </div>
         }
 
         {
-          message && 
+          message &&
           <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative flex items-center justify-between" role="alert">
-              <span className="block sm:inline">{message}</span>
-            </div>
+            <span className="block sm:inline">{message}</span>
+          </div>
         }
         <div className="flex justify-center mt-6">
           <Image
@@ -155,23 +157,23 @@ const Login = () => {
         />
 
         <div className="relative mt-4 w-full">
-            <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Password"
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-                name="password"
-            />
-            <button
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            required
+            name="password"
+          />
+          <button
             className="absolute right-0 top-0 mt-2 mr-2 flex items-center justify-center"
             type="button"
-                onClick={(e) => {
-                e.preventDefault();
-                setShowPassword(!showPassword);
-                }}
-            >
-                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-            </button>
+            onClick={(e) => {
+              e.preventDefault();
+              setShowPassword(!showPassword);
+            }}
+          >
+            {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+          </button>
         </div>
         <button className="w-full mt-4 bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
           type="submit"
@@ -184,13 +186,13 @@ const Login = () => {
           <p className="w-8 h-6 z-10 flex items-center justify-center bg-white px-2">o</p>
         </div>
         <div className="flex justify-center mt-4">
-            <button
-                className="flex py-2 px-4 mr-4 text-sm align-middle items-center rounded text-999 
+          <button
+            className="flex py-2 px-4 mr-4 text-sm align-middle items-center rounded text-999 
                 border border-solid transition duration-150 ease hover:bg-blue-600 hover:text-white gap-3"
-                onClick={handleGoogleSignIn}
-              >
-              <GoogleIcon className="text-2xl" /> Entra con Google
-            </button>
+            onClick={handleGoogleSignIn}
+          >
+            <GoogleIcon className="text-2xl" /> Entra con Google
+          </button>
         </div>
         <div className="flex justify-center mt-4">
           <button
