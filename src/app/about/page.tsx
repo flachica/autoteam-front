@@ -7,7 +7,7 @@ import GitHubIcon from '@mui/icons-material/GitHub';
 
 interface MetaProfile {
   profile: string;
-  role: string; 
+  role: string;
 }
 
 interface Profile {
@@ -57,14 +57,14 @@ const About: React.FC = () => {
       {profiles.length > 0 && (
         <Grid container spacing={2} justifyContent="center">
           {profiles.map((profile, index) => (
-            <Grid item key={index}>
+            <Grid key={index}>
               <Card style={{ maxWidth: 600, margin: '0 auto' }}>
                 <CardContent>
                   <Grid container spacing={2} alignItems="center">
-                    <Grid item>
+                    <Grid>
                       <Avatar src={profile.github.avatar_url} alt={`${profile.name} avatar`} style={{ width: 100, height: 100 }} />
                     </Grid>
-                    <Grid item xs>
+                    <Grid sx={{ flexGrow: 1 }}>
                       <Typography variant="h5">{profile.name} - {profile.role}</Typography>
                       <Typography variant="body1">{profile.github.bio}</Typography>
                       <IconButton

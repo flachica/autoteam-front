@@ -47,14 +47,14 @@ const AdminHomePage: React.FC = () => {
   const [editPlayerDialogOpen, setEditPlayerDialogOpen] = useState(false);
   const [monthlyCost, setMonthlyCost] = useState<MonthlyCost[]>([]);
   const [sortConfigMonthlyCost, setSortConfigMonthlyCost] = useState<{ key: keyof MonthlyCost; direction: 'asc' | 'desc' } | null>({ key: 'id', direction: 'desc' });
-  
+
   const playerService = new PlayerService();
   const courtService = new CourtService();
   const hourService = new HourService();
   const clubService = new ClubService();
   const cashService = new CashService();
   const isDebugging = useIsDebugging();
-  
+
 
   const handleResetPassword = async () => {
     setLoading(true);
@@ -94,7 +94,7 @@ const AdminHomePage: React.FC = () => {
       )
     );
   };
-    
+
   useEffect(() => {
     const fetchClubs = async () => {
       setLoading(true);
@@ -141,7 +141,7 @@ const AdminHomePage: React.FC = () => {
   const handleStartReservation = (reservationId: number) => {
     setReservationInProgress(reservationId);
   };
-  
+
   const fetchPlayers = async () => {
     setLoading(true);
     try {
@@ -409,13 +409,13 @@ const AdminHomePage: React.FC = () => {
 
   const handleMonthlyCostChange = (e: any) => {
     const { name, value } = e.target;
-    
+
     if (name === 'amount') {
       // Reemplazar coma por punto si existe
       const normalizedValue = value.replace(',', '.');
       // Verificar si es un número válido con decimales
       const isValidDecimal = /^\d*\.?\d*$/.test(normalizedValue);
-      
+
       setMonthlyCostData({
         ...formMonthlyCostData,
         [name]: isValidDecimal ? normalizedValue : value
@@ -429,7 +429,7 @@ const AdminHomePage: React.FC = () => {
       ...formMonthlyCostData,
       [name]: transformedValue || value
     });
-};
+  };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
@@ -443,7 +443,7 @@ const AdminHomePage: React.FC = () => {
     handleMonthlyCostProrrate(year, month, amount);
   };
 
-  
+
   return (
     <section className="w-full flex items-center justify-center bg-gray-100 px-10 pt-6">
       {loading && (
@@ -452,7 +452,7 @@ const AdminHomePage: React.FC = () => {
         </div>
       )}
       <Grid container spacing={4}>
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Card>
             <CardContent className="flex flex-col items-center">
               <div className="flex items-center mb-4">
@@ -462,30 +462,30 @@ const AdminHomePage: React.FC = () => {
                 </Typography>
               </div>
               <div className="w-full" style={{ height: '400px', overflow: 'auto' }}>
-              <Table stickyHeader>
+                <Table stickyHeader>
                   <TableHead>
                     <TableRow>
-                    <TableCell><TableSortLabel
-                          active={sortReservationConfig?.key === 'id'}
-                          direction={sortReservationConfig?.key === 'id' ? sortReservationConfig.direction : 'asc'}
-                          onClick={() => requestSortReservation('id')}
-                        >
-                          Id
-                        </TableSortLabel></TableCell>
                       <TableCell><TableSortLabel
-                          active={sortReservationConfig?.key === 'name'}
-                          direction={sortReservationConfig?.key === 'name' ? sortReservationConfig.direction : 'asc'}
-                          onClick={() => requestSortReservation('name')}
-                        >
-                          Nombre
-                        </TableSortLabel></TableCell>
+                        active={sortReservationConfig?.key === 'id'}
+                        direction={sortReservationConfig?.key === 'id' ? sortReservationConfig.direction : 'asc'}
+                        onClick={() => requestSortReservation('id')}
+                      >
+                        Id
+                      </TableSortLabel></TableCell>
+                      <TableCell><TableSortLabel
+                        active={sortReservationConfig?.key === 'name'}
+                        direction={sortReservationConfig?.key === 'name' ? sortReservationConfig.direction : 'asc'}
+                        onClick={() => requestSortReservation('name')}
+                      >
+                        Nombre
+                      </TableSortLabel></TableCell>
                       <TableCell>
                         <TableSortLabel
                           active={sortReservationConfig?.key === 'day_date'}
                           direction={sortReservationConfig?.key === 'day_date' ? sortReservationConfig.direction : 'asc'}
                           onClick={() => requestSortReservation('day_date')}
                         >
-                        Fecha
+                          Fecha
                         </TableSortLabel>
                       </TableCell>
                       <TableCell>
@@ -508,23 +508,23 @@ const AdminHomePage: React.FC = () => {
                       <TableRow key={reservation.id}>
                         <TableCell>{reservation.id}</TableCell>
                         <TableCell>{reservationInProgress === reservation.id ? (
-                            <TextField
-                              value={editedReservationName}
-                              onChange={handleReservationNameChange}
-                              variant="outlined"
-                              placeholder={reservation.name}
-                              size="small"
-                            />
-                          ) : (
-                            reservation.name
-                          )}</TableCell>
+                          <TextField
+                            value={editedReservationName}
+                            onChange={handleReservationNameChange}
+                            variant="outlined"
+                            placeholder={reservation.name}
+                            size="small"
+                          />
+                        ) : (
+                          reservation.name
+                        )}</TableCell>
                         <TableCell>{reservation.day_date}</TableCell>
                         <TableCell>{reservation.hour}</TableCell>
                         <TableCell>
-                          <PlayerList myPlayer={myPlayer} players={reservation.players} invitedPlayers={reservation.invitedPlayers} anonPlayers={reservation.anonPlayers} isDebugging={ isDebugging } />
+                          <PlayerList myPlayer={myPlayer} players={reservation.players} invitedPlayers={reservation.invitedPlayers} anonPlayers={reservation.anonPlayers} isDebugging={isDebugging} />
                         </TableCell>
                         <TableCell>
-                        {reservationInProgress === reservation.id ? (
+                          {reservationInProgress === reservation.id ? (
                             <>
                               <Button color="error" onClick={() => handleCancelReservation(reservation.id)} startIcon={<CancelIcon />}>
                                 Ko
@@ -548,7 +548,7 @@ const AdminHomePage: React.FC = () => {
           </Card>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Card>
             <CardContent className="flex flex-col items-center">
               <div className="flex items-center mb-4">
@@ -558,55 +558,55 @@ const AdminHomePage: React.FC = () => {
                 </Typography>
               </div>
               <div className="w-full text-center p-10" style={{ height: '400px', overflow: 'auto' }}>
-              <form onSubmit={handleSubmit} className="w-full">
-              <TextField
-                name="date"
-                type="date"
-                value={formData.date}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-              />
-              <FormControl fullWidth margin="normal">
-                <InputLabel id="clubId-label">Club ID</InputLabel>
-                <Select
-                  labelId="clubId-label"
-                  name="clubId"
-                  value={formData.clubId}
-                  onChange={handleChange}
-                  label="Club ID"
-                >
-                  {clubs.map((club) => (
-                    <MenuItem key={club.id} value={club.id}>
-                      {club.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              <TextField
-                label="Hora (HH:MM)"
-                name="hour"
-                value={formData.hour}
-                onChange={handleChange}
-                fullWidth
-                margin="normal"
-              />
-              <Button
-                type="submit"
-                variant="contained"
-                color="primary"
-                startIcon={<EventAvailableIcon />}
-                fullWidth
-              >
-                Abrir semana
-              </Button>
-            </form>
+                <form onSubmit={handleSubmit} className="w-full">
+                  <TextField
+                    name="date"
+                    type="date"
+                    value={formData.date}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                  <FormControl fullWidth margin="normal">
+                    <InputLabel id="clubId-label">Club ID</InputLabel>
+                    <Select
+                      labelId="clubId-label"
+                      name="clubId"
+                      value={formData.clubId}
+                      onChange={handleChange}
+                      label="Club ID"
+                    >
+                      {clubs.map((club) => (
+                        <MenuItem key={club.id} value={club.id}>
+                          {club.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <TextField
+                    label="Hora (HH:MM)"
+                    name="hour"
+                    value={formData.hour}
+                    onChange={handleChange}
+                    fullWidth
+                    margin="normal"
+                  />
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    startIcon={<EventAvailableIcon />}
+                    fullWidth
+                  >
+                    Abrir semana
+                  </Button>
+                </form>
               </div>
             </CardContent>
           </Card>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Card>
             <CardContent className="flex flex-col items-center">
               <div className="flex items-center mb-4">
@@ -616,7 +616,7 @@ const AdminHomePage: React.FC = () => {
                 </Typography>
               </div>
               <div className="w-full text-center p-10" style={{ height: '400px', overflow: 'auto' }}>
-              <form onSubmit={handleMonthlyCostSubmit} className="w-full">
+                <form onSubmit={handleMonthlyCostSubmit} className="w-full">
                   <TextField
                     name="year"
                     type="integer"
@@ -633,7 +633,7 @@ const AdminHomePage: React.FC = () => {
                     onChange={handleMonthlyCostChange}
                     fullWidth
                     margin="normal"
-                      />
+                  />
                   <TextField
                     label="Coste"
                     name="amount"
@@ -653,205 +653,205 @@ const AdminHomePage: React.FC = () => {
                   </Button>
                 </form>
               </div>
-              <div className="w-full"  style={{ height: '400px', overflow: 'auto' }}>
-                  <Table stickyHeader>
-                    <TableHead>
-                      <TableRow>
+              <div className="w-full" style={{ height: '400px', overflow: 'auto' }}>
+                <Table stickyHeader>
+                  <TableHead>
+                    <TableRow>
                       {isDebugging && (
-                          <TableCell>
-                            <TableSortLabel
-                              active={sortConfig?.key === 'id'}
-                              direction={sortConfig?.key === 'id' ? sortConfig.direction : 'asc'}
-                              onClick={() => requestSortMonthlyCost('id')}
-                            >
-                              ID
-                            </TableSortLabel>
-                          </TableCell>
-                        )}
-                        <TableCell><TableSortLabel
-                            active={sortConfigMonthlyCost?.key === 'year'}
-                            direction={sortConfigMonthlyCost?.key === 'year' ? sortConfigMonthlyCost.direction : 'asc'}
-                            onClick={() => requestSortMonthlyCost('year')}
-                          >
-                            Año
-                          </TableSortLabel></TableCell>
-                        <TableCell><TableSortLabel
-                            active={sortConfigMonthlyCost?.key === 'month'}
-                            direction={sortConfigMonthlyCost?.key === 'month' ? sortConfigMonthlyCost.direction : 'asc'}
-                            onClick={() => requestSortMonthlyCost('month')}
-                          >
-                            Mes
-                          </TableSortLabel></TableCell>
-                        <TableCell><TableSortLabel
-                            active={sortConfigMonthlyCost?.key === 'amount'}
-                            direction={sortConfigMonthlyCost?.key === 'amount' ? sortConfigMonthlyCost.direction : 'asc'}
-                            onClick={() => requestSortMonthlyCost('amount')}
-                          >
-                            Coste
-                          </TableSortLabel></TableCell>
-                          <TableCell><TableSortLabel
-                            active={sortConfigMonthlyCost?.key === 'description'}
-                            direction={sortConfigMonthlyCost?.key === 'description' ? sortConfigMonthlyCost.direction : 'asc'}
-                            onClick={() => requestSortMonthlyCost('description')}
-                          >
-                            Descripción
-                          </TableSortLabel></TableCell>
                         <TableCell>
+                          <TableSortLabel
+                            active={sortConfig?.key === 'id'}
+                            direction={sortConfig?.key === 'id' ? sortConfig.direction : 'asc'}
+                            onClick={() => requestSortMonthlyCost('id')}
+                          >
+                            ID
+                          </TableSortLabel>
+                        </TableCell>
+                      )}
+                      <TableCell><TableSortLabel
+                        active={sortConfigMonthlyCost?.key === 'year'}
+                        direction={sortConfigMonthlyCost?.key === 'year' ? sortConfigMonthlyCost.direction : 'asc'}
+                        onClick={() => requestSortMonthlyCost('year')}
+                      >
+                        Año
+                      </TableSortLabel></TableCell>
+                      <TableCell><TableSortLabel
+                        active={sortConfigMonthlyCost?.key === 'month'}
+                        direction={sortConfigMonthlyCost?.key === 'month' ? sortConfigMonthlyCost.direction : 'asc'}
+                        onClick={() => requestSortMonthlyCost('month')}
+                      >
+                        Mes
+                      </TableSortLabel></TableCell>
+                      <TableCell><TableSortLabel
+                        active={sortConfigMonthlyCost?.key === 'amount'}
+                        direction={sortConfigMonthlyCost?.key === 'amount' ? sortConfigMonthlyCost.direction : 'asc'}
+                        onClick={() => requestSortMonthlyCost('amount')}
+                      >
+                        Coste
+                      </TableSortLabel></TableCell>
+                      <TableCell><TableSortLabel
+                        active={sortConfigMonthlyCost?.key === 'description'}
+                        direction={sortConfigMonthlyCost?.key === 'description' ? sortConfigMonthlyCost.direction : 'asc'}
+                        onClick={() => requestSortMonthlyCost('description')}
+                      >
+                        Descripción
+                      </TableSortLabel></TableCell>
+                      <TableCell>
+                        Eliminar
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {monthlyCost.map(monthlyCost => (
+                      <TableRow key={monthlyCost.id}>
+                        {isDebugging && (<TableCell>{monthlyCost.id}</TableCell>)}
+                        <TableCell>{monthlyCost.year}</TableCell>
+                        <TableCell>{monthlyCost.month}</TableCell>
+                        <TableCell>{monthlyCost.amount}</TableCell>
+                        <TableCell>{monthlyCost.description}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="contained"
+                            color={"error"}
+                            onClick={async () => {
+                              await cashService.monthlyCostDelete(monthlyCost.id ?? 0, myPlayer?.accessToken || '');
+                              await fetchAllMonthlyCost();
+                            }
+                            }
+                          >
                             Eliminar
+                          </Button>
                         </TableCell>
                       </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {monthlyCost.map(monthlyCost => (
-                        <TableRow key={monthlyCost.id}>
-                          {isDebugging && (<TableCell>{monthlyCost.id}</TableCell>)}
-                          <TableCell>{monthlyCost.year}</TableCell>
-                          <TableCell>{monthlyCost.month}</TableCell>
-                          <TableCell>{monthlyCost.amount}</TableCell>
-                          <TableCell>{monthlyCost.description}</TableCell>
-                          <TableCell>
-                            <Button
-                              variant="contained"
-                              color={"error"}
-                              onClick={async () => {
-                                await cashService.monthlyCostDelete(monthlyCost.id ?? 0, myPlayer?.accessToken || '');
-                                await fetchAllMonthlyCost();
-                              }
-                              }
-                            >
-                              Eliminar
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Card>
             <CardContent className="flex flex-col items-center">
               <div className="flex items-center mb-4">
-                  <PeopleIcon fontSize="large" className="mr-4" />
-                  <Typography variant="h5" component="div">
-                    Usuarios
-                  </Typography>
-                </div>
-                <TextField
-                    label="Filtrar"
-                    variant="outlined"
-                    value={filter}
-                  onChange={handleFilterChange}
-                  fullWidth
-                    className="my-4"
-                />
-                <div className="w-full"  style={{ height: '400px', overflow: 'auto' }}>
-                  <Table stickyHeader>
-                    <TableHead>
-                      <TableRow>
+                <PeopleIcon fontSize="large" className="mr-4" />
+                <Typography variant="h5" component="div">
+                  Usuarios
+                </Typography>
+              </div>
+              <TextField
+                label="Filtrar"
+                variant="outlined"
+                value={filter}
+                onChange={handleFilterChange}
+                fullWidth
+                className="my-4"
+              />
+              <div className="w-full" style={{ height: '400px', overflow: 'auto' }}>
+                <Table stickyHeader>
+                  <TableHead>
+                    <TableRow>
                       {isDebugging && (
-                          <TableCell>
-                            <TableSortLabel
-                              active={sortConfig?.key === 'id'}
-                              direction={sortConfig?.key === 'id' ? sortConfig.direction : 'asc'}
-                              onClick={() => requestSort('id')}
-                            >
-                              ID
-                            </TableSortLabel>
-                          </TableCell>
-                        )}
-                        <TableCell><TableSortLabel
-                            active={sortConfig?.key === 'name'}
-                            direction={sortConfig?.key === 'name' ? sortConfig.direction : 'asc'}
-                            onClick={() => requestSort('name')}
-                          >
-                            Nombre
-                          </TableSortLabel></TableCell>
-                        <TableCell><TableSortLabel
-                            active={sortConfig?.key === 'surname'}
-                            direction={sortConfig?.key === 'surname' ? sortConfig.direction : 'asc'}
-                            onClick={() => requestSort('surname')}
-                          >
-                            Apellido
-                          </TableSortLabel></TableCell>
-                        <TableCell><TableSortLabel
-                            active={sortConfig?.key === 'phone'}
-                            direction={sortConfig?.key === 'phone' ? sortConfig.direction : 'asc'}
-                            onClick={() => requestSort('phone')}
-                          >
-                            Teléfono
-                        </TableSortLabel></TableCell>
-                        <TableCell><TableSortLabel
-                            active={sortConfig?.key === 'email'}
-                            direction={sortConfig?.key === 'email' ? sortConfig.direction : 'asc'}
-                            onClick={() => requestSort('email')}
-                          >
-                            EMail
-                          </TableSortLabel></TableCell>
-
-                          <TableCell><TableSortLabel
-                            active={sortConfig?.key === 'balance'}
-                            direction={sortConfig?.key === 'balance' ? sortConfig.direction : 'asc'}
-                            onClick={() => requestSort('balance')}
-                          >
-                            Saldo
-                          </TableSortLabel></TableCell>
-                          <TableCell><TableSortLabel
-                            active={sortConfig?.key === 'balance'}
-                            direction={sortConfig?.key === 'balance' ? sortConfig.direction : 'asc'}
-                            onClick={() => requestSort('balance')}
-                          >
-                            Saldo futuro
-                          </TableSortLabel></TableCell>
                         <TableCell>
+                          <TableSortLabel
+                            active={sortConfig?.key === 'id'}
+                            direction={sortConfig?.key === 'id' ? sortConfig.direction : 'asc'}
+                            onClick={() => requestSort('id')}
+                          >
+                            ID
+                          </TableSortLabel>
+                        </TableCell>
+                      )}
+                      <TableCell><TableSortLabel
+                        active={sortConfig?.key === 'name'}
+                        direction={sortConfig?.key === 'name' ? sortConfig.direction : 'asc'}
+                        onClick={() => requestSort('name')}
+                      >
+                        Nombre
+                      </TableSortLabel></TableCell>
+                      <TableCell><TableSortLabel
+                        active={sortConfig?.key === 'surname'}
+                        direction={sortConfig?.key === 'surname' ? sortConfig.direction : 'asc'}
+                        onClick={() => requestSort('surname')}
+                      >
+                        Apellido
+                      </TableSortLabel></TableCell>
+                      <TableCell><TableSortLabel
+                        active={sortConfig?.key === 'phone'}
+                        direction={sortConfig?.key === 'phone' ? sortConfig.direction : 'asc'}
+                        onClick={() => requestSort('phone')}
+                      >
+                        Teléfono
+                      </TableSortLabel></TableCell>
+                      <TableCell><TableSortLabel
+                        active={sortConfig?.key === 'email'}
+                        direction={sortConfig?.key === 'email' ? sortConfig.direction : 'asc'}
+                        onClick={() => requestSort('email')}
+                      >
+                        EMail
+                      </TableSortLabel></TableCell>
+
+                      <TableCell><TableSortLabel
+                        active={sortConfig?.key === 'balance'}
+                        direction={sortConfig?.key === 'balance' ? sortConfig.direction : 'asc'}
+                        onClick={() => requestSort('balance')}
+                      >
+                        Saldo
+                      </TableSortLabel></TableCell>
+                      <TableCell><TableSortLabel
+                        active={sortConfig?.key === 'balance'}
+                        direction={sortConfig?.key === 'balance' ? sortConfig.direction : 'asc'}
+                        onClick={() => requestSort('balance')}
+                      >
+                        Saldo futuro
+                      </TableSortLabel></TableCell>
+                      <TableCell>
+                        Resetear clave
+                      </TableCell>
+                      <TableCell>
+                        Editar jugador
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {filteredPlayers.map(player => (
+                      <TableRow key={player.id}>
+                        {isDebugging && (<TableCell>{player.id}</TableCell>)}
+                        <TableCell>{player.name}</TableCell>
+                        <TableCell>{player.surname}</TableCell>
+                        <TableCell>{player.phone}</TableCell>
+                        <TableCell>{player.email}</TableCell>
+                        <TableCell>{player.balance}</TableCell>
+                        <TableCell>{player.futureBalance}</TableCell>
+                        <TableCell>
+                          <Button
+                            variant="contained"
+                            color={"error"}
+                            onClick={() => handleResetDialogOpenPopup(player)}
+                          >
                             Resetear clave
+                          </Button>
                         </TableCell>
                         <TableCell>
-                            Editar jugador
+                          <Button
+                            variant="contained"
+                            color={"success"}
+                            onClick={() => handleEditPlayerDialogOpenPopup(player)}
+                          >
+                            Editar
+                          </Button>
                         </TableCell>
                       </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {filteredPlayers.map(player => (
-                        <TableRow key={player.id}>
-                          {isDebugging && (<TableCell>{player.id}</TableCell>)}
-                          <TableCell>{player.name}</TableCell>
-                          <TableCell>{player.surname}</TableCell>
-                          <TableCell>{player.phone}</TableCell>
-                          <TableCell>{player.email}</TableCell>
-                          <TableCell>{player.balance}</TableCell>
-                          <TableCell>{player.futureBalance}</TableCell>
-                          <TableCell>
-                            <Button
-                              variant="contained"
-                              color={"error"}
-                              onClick={() => handleResetDialogOpenPopup(player)}
-                            >
-                              Resetear clave
-                            </Button>
-                          </TableCell>
-                          <TableCell>
-                            <Button
-                              variant="contained"
-                              color={"success"}
-                              onClick={() => handleEditPlayerDialogOpenPopup(player)}
-                            >
-                              Editar
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             </CardContent>
           </Card>
         </Grid>
 
-        <Grid item xs={12}>
+        <Grid size={{ xs: 12 }}>
           <Card>
             <CardContent className="flex flex-col items-center">
               <div className="flex items-center mb-4">
@@ -861,55 +861,55 @@ const AdminHomePage: React.FC = () => {
                 </Typography>
               </div>
               <div className="w-full" style={{ height: '200px', overflow: 'auto' }}>
-              <Table stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Nombre</TableCell>
-                    <TableCell>Lunes</TableCell>
-                    <TableCell>Martes</TableCell>
-                    <TableCell>Miércoles</TableCell>
-                    <TableCell>Jueves</TableCell>
-                    <TableCell>Viernes</TableCell>
-                    <TableCell>Sábado</TableCell>
-                    <TableCell>Domingo</TableCell>
-                    <TableCell>Activo</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {groupedHours && groupedHours.map(group => (
-                    <TableRow key={group.id}>
-                      <TableCell>{group.group_name}</TableCell>
-                      {group.days.map(day => (
-                        <TableCell key={day.day_name}>
-                          {day.hours.sort((a, b) => a.index - b.index).map(hour => (
-                            <div key={hour.id}>
-                              {hour.name} - {hour.price}€
-                            </div>
-                          ))}
-                        </TableCell>
-                      ))}
-                      <TableCell>
-                        <Switch
-                          checked={group.active}
-                          onChange={() => handleToggleActive(group.id, group.active)}
-                          color="primary"
-                        />
-                      </TableCell>
+                <Table stickyHeader>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Nombre</TableCell>
+                      <TableCell>Lunes</TableCell>
+                      <TableCell>Martes</TableCell>
+                      <TableCell>Miércoles</TableCell>
+                      <TableCell>Jueves</TableCell>
+                      <TableCell>Viernes</TableCell>
+                      <TableCell>Sábado</TableCell>
+                      <TableCell>Domingo</TableCell>
+                      <TableCell>Activo</TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHead>
+                  <TableBody>
+                    {groupedHours && groupedHours.map(group => (
+                      <TableRow key={group.id}>
+                        <TableCell>{group.group_name}</TableCell>
+                        {group.days.map(day => (
+                          <TableCell key={day.day_name}>
+                            {day.hours.sort((a, b) => a.index - b.index).map(hour => (
+                              <div key={hour.id}>
+                                {hour.name} - {hour.price}€
+                              </div>
+                            ))}
+                          </TableCell>
+                        ))}
+                        <TableCell>
+                          <Switch
+                            checked={group.active}
+                            onChange={() => handleToggleActive(group.id, group.active)}
+                            color="primary"
+                          />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
               </div>
             </CardContent>
           </Card>
         </Grid>
       </Grid>
       <Snackbar open={snackbarOpen} autoHideDuration={3000} onClose={handleSnackbarClose}>
-        <Alert onClose={handleSnackbarClose} severity="success" sx={{ 
-      width: '100%', 
-      border: '2px solid #4caf50', 
-      boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' 
-    }}>
+        <Alert onClose={handleSnackbarClose} severity="success" sx={{
+          width: '100%',
+          border: '2px solid #4caf50',
+          boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'
+        }}>
           {errorMessage}
         </Alert>
       </Snackbar>
@@ -937,9 +937,9 @@ const AdminHomePage: React.FC = () => {
         <ProfileForm token={myPlayer?.accessToken} formRole='admin' player={selectedPlayer} mode={'edit'} onSuccess={async function (): Promise<void> {
           await fetchPlayers();
           setEditPlayerDialogOpen(false);
-        } } />
+        }} />
       </Dialog>
-      
+
     </section>
   );
 };

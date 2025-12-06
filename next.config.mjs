@@ -3,10 +3,7 @@ const nextConfig = {
   env: {
     TRUSTED_HOSTS: process.env.TRUSTED_HOSTS,
   },
-  i18n: {
-    locales: ['es-ES'],
-    defaultLocale: 'es-ES',
-  },
+
   images: {
     disableStaticImages: false,
     remotePatterns: [

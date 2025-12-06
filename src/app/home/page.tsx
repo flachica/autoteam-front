@@ -12,7 +12,7 @@ import NoDataCard from '../../components/generics/NoDataCard';
 import ErrorCard from '../../components/generics/errorCard';
 import { CourtService } from '../../services/courtSevice';
 import { Club } from '../../models/club';
-import { IconButton, LinearProgress, Box, Button} from '@mui/material';
+import { IconButton, LinearProgress, Box, Button } from '@mui/material';
 import { ArrowBack, ArrowForward, Refresh } from '@mui/icons-material';
 import NewCourtDialog from '../../components/autoteam/newCourtDialog';
 import { GroupedHour } from '../../models/grouped-hour';
@@ -28,7 +28,7 @@ import SetMeInDialog from '../../components/autoteam/setMeInDialog';
 export default function Home() {
   const myPlayer = usePlayer();
   const [homeData, setHomeData] = useState<HomeData>({ clubs: [], week: '', currentBalance: 0 });
-  const [groupedHour, setGroupedHour] = useState<GroupedHour>({ id:0, group_name: '', days: [], active: false });
+  const [groupedHour, setGroupedHour] = useState<GroupedHour>({ id: 0, group_name: '', days: [], active: false });
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -51,7 +51,7 @@ export default function Home() {
   const courtService = new CourtService();
   const playerService = new PlayerService();
   const clubService = new ClubService();
-  const hourService = new HourService();    
+  const hourService = new HourService();
 
   const handleWallet = async () => {
     await router.push('/cash');
@@ -74,7 +74,7 @@ export default function Home() {
   }
 
   useEffect(() => {
-    fetchGroupedHours(); 
+    fetchGroupedHours();
   }, [myPlayer]);
 
   const fetchData = async () => {
@@ -95,7 +95,7 @@ export default function Home() {
       const weekDay = mondayWithWeeks.toLocaleDateString('es-ES').replace(/\//g, '-');
       setMonday(weekDay);
       const homeData: HomeData = await clubService.getData(weekDay, myPlayer.accessToken);
-      
+
       setHomeData(homeData);
       const myPlayerData = await playerService.getMyPlayerData(myPlayer.accessToken, myPlayer.id);
       if (myPlayerData) {
@@ -129,7 +129,7 @@ export default function Home() {
 
   useEffect(() => {
     if (myPlayer && myPlayer.accessToken) fetchData();
-  }, [myPlayer, week, isSetMeInDialogOpen, isSetMeOutOpen]);
+  }, [myPlayer, week]);
 
   const fetchPlayers = async () => {
     if (!myPlayer || !myPlayer.accessToken) return;
@@ -194,7 +194,7 @@ export default function Home() {
         setIsRefreshing(false);
         return;
       }
-        
+
       await courtService.newCourt(myPlayer!.id, selectedClub!.id, selectedDay, selectedTime, myPlayer.accessToken);
       await fetchData();
     } catch (error) {
@@ -328,17 +328,17 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-100 p-4 flex items-start justify-center">
       <NewCourtDialog
-          isOpen={isNewCourtOpen}
-          firstDayOfWeek={monday}
-          club={selectedClub || { id: 0, name: '', courts: [] }}
-          hours={groupedHour}
-          onConfirm={handleNewCourtConfirmOperation}
-          onCancel={closeNewCourtDialog}
+        isOpen={isNewCourtOpen}
+        firstDayOfWeek={monday}
+        club={selectedClub || { id: 0, name: '', courts: [] }}
+        hours={groupedHour}
+        onConfirm={handleNewCourtConfirmOperation}
+        onCancel={closeNewCourtDialog}
       />
       {isRefreshing && <LinearProgress className="absolute top-0 left-0 w-full" />}
       <div className="w-full max-w-5xl">
         <div className="bg-white p-6 rounded-lg shadow-lg">
-          { !homeData.week && (
+          {!homeData.week && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative flex items-center justify-between" role="alert">
               <span className="block sm:inline">Hubo un error al obtener datos</span>
               <IconButton color="primary" onClick={fetchData}>
@@ -346,7 +346,7 @@ export default function Home() {
               </IconButton>
             </div>
           )}
-          { !previousError && !isLoading && (
+          {!previousError && !isLoading && (
             <Box display="flex" alignItems="center" justifyContent="space-between">
               <Box display="flex" alignItems="center" justifyContent="center" flexGrow={1}>
                 {(myPlayer?.role === "admin" || (week > -1 && week <= 1)) && (
@@ -372,7 +372,7 @@ export default function Home() {
                 </Box>
               </Box>
             </Box>
-        )}
+          )}
           {
             homeData.week && !homeData.clubs.length && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative flex items-center justify-between" role="alert">
@@ -383,27 +383,27 @@ export default function Home() {
           {homeData.clubs.map((club, index) => (
             <div key={index} className="mb-6">
               {homeData.clubs.length > 1 && (<h2 className="text-2xl font-bold mb-4 text-gray-800">{club.name}</h2>)}
-              <div className="mt-2 mb-5">                
-              {(myPlayer?.role === "admin" || (week == 0 || (week == 1 && club.courts.length > 0))) && (<Button variant="contained" color="primary" startIcon={<AddCircleOutlineIcon />}
-                    onClick={() => openNewCourtDialog(club)}>
-                Abrir pista en {club.name}
-              </Button>)}
+              <div className="mt-2 mb-5">
+                {(myPlayer?.role === "admin" || (week == 0 || (week == 1 && club.courts.length > 0))) && (<Button variant="contained" color="primary" startIcon={<AddCircleOutlineIcon />}
+                  onClick={() => openNewCourtDialog(club)}>
+                  Abrir pista en {club.name}
+                </Button>)}
               </div>
               <div className="overflow-x-auto">
                 {
-                CourtList({ courts: club.courts, myPlayer: myPlayer!, openDialog: openDialog, openSetMeInDialog: openSetMeInDialog, openSetMeOutDialog: openSetMeOutDialog })
+                  <CourtList courts={club.courts} myPlayer={myPlayer!} openDialog={openDialog} openSetMeInDialog={openSetMeInDialog} openSetMeOutDialog={openSetMeOutDialog} />
                 }
                 {
-                    <div className="mt-5">    
-                      {(myPlayer?.role === "admin" || (week == 0 || (week == 1 && club.courts.length > 0))) && (<Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<AddCircleOutlineIcon />}
-                        onClick={() => openNewCourtDialog(club)}
-                      >
-                        Abrir pista en {club.name}
-                      </Button>)}
-                    </div>
+                  <div className="mt-5">
+                    {(myPlayer?.role === "admin" || (week == 0 || (week == 1 && club.courts.length > 0))) && (<Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<AddCircleOutlineIcon />}
+                      onClick={() => openNewCourtDialog(club)}
+                    >
+                      Abrir pista en {club.name}
+                    </Button>)}
+                  </div>
                 }
               </div>
             </div>

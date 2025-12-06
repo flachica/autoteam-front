@@ -24,7 +24,7 @@ const CourtList: React.FC<{
     <Box>
       <Grid container spacing={2}>
         {courts.map((court) => (
-          <Grid item xs={12} sm={6} md={4} lg={2.4} key={court.id} sx={{ display: 'flex' }}>
+          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 2 }} key={court.id} sx={{ display: 'flex' }}>
             <CourtItem
               court={court}
               myPlayer={myPlayer}

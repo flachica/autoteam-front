@@ -61,20 +61,16 @@ const CourtItem: React.FC<CourtItemProps> = ({ court, myPlayer, openDialog, open
     if (myPlayer?.role === 'admin') {
       if (court.court_state === 'closed' || court.court_state === 'expired') {
         return (
-          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700 text-center">
-            {court.court_state === "closed" && (<Button variant="contained" fullWidth color="success" startIcon={<AddCircleOutlineIcon />}
-              onClick={() => openDialog({ message: 'Reservar', data: court, name: OperationName.COURT_RESERVE })}>
-            </Button>)}
-          </td>
+          court.court_state === "closed" && (<Button variant="contained" fullWidth color="success" startIcon={<AddCircleOutlineIcon />}
+            onClick={() => openDialog({ message: 'Reservar', data: court, name: OperationName.COURT_RESERVE })}>
+          </Button>)
         );
       }
       if (court.court_state === 'reserved') {
         return (
-          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700 text-center">
-            <Button fullWidth variant="contained" color="warning" startIcon={<RemoveCircleOutlineIcon />}
-              onClick={() => openDialog({ message: 'Quitar reserva', data: court, name: OperationName.COURT_UNRESERVE })}>
-            </Button>
-          </td>
+          <Button fullWidth variant="contained" color="warning" startIcon={<RemoveCircleOutlineIcon />}
+            onClick={() => openDialog({ message: 'Quitar reserva', data: court, name: OperationName.COURT_UNRESERVE })}>
+          </Button>
         );
       }
     }
@@ -84,11 +80,9 @@ const CourtItem: React.FC<CourtItemProps> = ({ court, myPlayer, openDialog, open
   const renderCourtRemoveButton = () => {
     if (myPlayer?.role === 'admin' && court.court_state === 'opened') {
       return (
-        <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700 text-center">
-          <Button variant="contained" fullWidth color="error" startIcon={<RemoveCircleOutlineIcon />}
-            onClick={() => openDialog({ message: 'Eliminar', data: court, name: OperationName.COURT_DELETE })}>
-          </Button>
-        </td>
+        <Button variant="contained" fullWidth color="error" startIcon={<RemoveCircleOutlineIcon />}
+          onClick={() => openDialog({ message: 'Eliminar', data: court, name: OperationName.COURT_DELETE })}>
+        </Button>
       );
     }
     return null;
@@ -99,7 +93,7 @@ const CourtItem: React.FC<CourtItemProps> = ({ court, myPlayer, openDialog, open
     today.setHours(0, 0, 0, 0);
     const [dayNumber, month, year] = court.day_date.split('/').map(part => parseInt(part, 10));
     let courtDate = new Date(year, month - 1, dayNumber);
-    
+
     const isCourtAvailable = !['reserved'].includes(court.court_state)
     if (!isCourtAvailable) {
       return null;
@@ -112,16 +106,16 @@ const CourtItem: React.FC<CourtItemProps> = ({ court, myPlayer, openDialog, open
           } else {
             openDialog({ message: 'Salir', data: court, name: OperationName.COURT_OUT })
           }
-        }}/>
-        ) : (
-        <Button fullWidth variant="contained"
-            onClick={() => openSetMeInDialog({ message: 'Entrar', data: court, name: OperationName.COURT_IN })}
-            className="bg-green-500 hover:bg-green-200"
-            startIcon={<AddCircleOutlineIcon />}
-          />
-        ))
+        }} />
+    ) : (
+      <Button fullWidth variant="contained"
+        onClick={() => openSetMeInDialog({ message: 'Entrar', data: court, name: OperationName.COURT_IN })}
+        className="bg-green-500 hover:bg-green-200"
+        startIcon={<AddCircleOutlineIcon />}
+      />
+    ))
   };
-  
+
   return (
     <Card variant="outlined" sx={{ mb: 2, height: '100%' }}>
       <CardContent sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
@@ -131,7 +125,7 @@ const CourtItem: React.FC<CourtItemProps> = ({ court, myPlayer, openDialog, open
           sx={{ backgroundColor: '#f5f5f5', textAlign: 'center' }}
         />
         <Box sx={{ mb: 2 }}>
-          
+
           <Typography color="text.secondary" sx={{ mb: 1 }}>
             {court.day_name}
           </Typography>
@@ -141,8 +135,8 @@ const CourtItem: React.FC<CourtItemProps> = ({ court, myPlayer, openDialog, open
           <Typography color="text.secondary" sx={{ mb: 1 }}>
             Hora: {court.hour}
           </Typography>
-          <Typography color="text.secondary">
-            Jugadores: <PlayerList myPlayer={myPlayer} players={court.players} invitedPlayers={court.invitedPlayers} anonPlayers={court.anonPlayers} isDebugging={ isDebugging } />
+          <Typography component="div" color="text.secondary">
+            Jugadores: <PlayerList myPlayer={myPlayer} players={court.players} invitedPlayers={court.invitedPlayers} anonPlayers={court.anonPlayers} isDebugging={isDebugging} />
           </Typography>
           <Typography color="text.secondary">
             Precio: {court.price}

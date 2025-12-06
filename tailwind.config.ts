@@ -1,4 +1,4 @@
-const withMT = require("@material-tailwind/html/utils/withMT");
+const withMT = require("@material-tailwind/react/utils/withMT");
 
 module.exports = withMT({
     content: [

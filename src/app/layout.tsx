@@ -11,7 +11,7 @@ import { DebugProvider } from './debug.context';
 
 const inter = Inter({ subsets: ["latin"] });
 
-const RootLayout = ({ children, pathname }: { children: React.ReactNode, pathname: string }) => {
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="es">
       <body>

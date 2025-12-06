@@ -16,6 +16,7 @@ import { AccountCircle } from '@mui/icons-material';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import VpnKeyIcon from '@mui/icons-material/VpnKey';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 const TopBar = () => {
   const myPlayer = usePlayer();
@@ -23,11 +24,11 @@ const TopBar = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-  
+
   const toggleDebugging = useToggleDebugging();
   const isDebugging = useIsDebugging();
   const router = useRouter();
-  
+
   const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (event.type === 'keydown' && ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) {
       return;
@@ -69,16 +70,50 @@ const TopBar = () => {
     setAnchorEl(null);
   };
 
+  const handleExportBalances = async () => {
+    setIsRefreshing(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/player/export/balances`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${myPlayer?.accessToken}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error('Error exporting balances');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'saldos.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsRefreshing(false);
+      setAnchorEl(null);
+    }
+  };
+
   const handleLogout = async () => {
     setIsRefreshing(true);
     await signOut({ callbackUrl: '/login' });
   };
   return (
     <div className="topbar">
-      { isRefreshing && 
-      <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
-        <CircularProgress />
-      </div>}
+      {isRefreshing &&
+        <div className="absolute inset-0 bg-white bg-opacity-75 flex items-center justify-center z-10">
+          <CircularProgress />
+        </div>}
       <AppBar position="static">
         <Toolbar>
           <IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
@@ -87,7 +122,7 @@ const TopBar = () => {
           <div style={{ flexGrow: 1 }} />
           {myPlayer?.role === 'admin' && (
             <IconButton color="inherit" onClick={toggleDebugging}>
-              <BugReportIcon style={{ color: isDebugging ? 'red' : 'inherit' }}/>
+              <BugReportIcon style={{ color: isDebugging ? 'red' : 'inherit' }} />
             </IconButton>
           )}
           <IconButton color="inherit" onClick={handleMenuOpen}>
@@ -117,6 +152,14 @@ const TopBar = () => {
               </ListItemIcon>
               <ListItemText primary="Editar perfil" />
             </MenuItem>
+            {myPlayer?.role === 'admin' && (
+              <MenuItem onClick={handleExportBalances}>
+                <ListItemIcon>
+                  <FileDownloadIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText primary="Exportar Saldos" />
+              </MenuItem>
+            )}
             <MenuItem onClick={handleLogout}>
               <ListItemIcon>
                 <ExitToAppIcon fontSize="small" />
@@ -128,13 +171,13 @@ const TopBar = () => {
             open={snackbarOpen}
             autoHideDuration={6000}
             onClose={handleSnackbarClose}
-            >
-            <Alert onClose={handleSnackbarClose} severity="success" sx={{ 
-              width: '100%', 
-              border: '2px solid #4caf50', 
-              boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)' 
-          }}>
-            Token copiado al portapapeles
+          >
+            <Alert onClose={handleSnackbarClose} severity="success" sx={{
+              width: '100%',
+              border: '2px solid #4caf50',
+              boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)'
+            }}>
+              Token copiado al portapapeles
             </Alert>
           </Snackbar>
         </Toolbar>
@@ -144,31 +187,31 @@ const TopBar = () => {
           role="presentation"
           onClick={toggleDrawer(false)}
           onKeyDown={toggleDrawer(false)}
-          style={{ width: 250, height: 100 + '%'}}
+          style={{ width: 250, height: 100 + '%' }}
           className="top-bar bg-blue-500 text-white"
         >
-          <IconButton onClick={toggleDrawer(false)} style={{ position: 'absolute', top: 0, right: 0, color: 'white'}}>
+          <IconButton onClick={toggleDrawer(false)} style={{ position: 'absolute', top: 0, right: 0, color: 'white' }}>
             <CloseIcon />
           </IconButton>
-         <List>
-         <ListItem component="a" href="/home">
-           <ListItemIcon>
-             <HomeIcon className='text-white' />
-           </ListItemIcon>
-           <ListItemText primary="Inicio" />
-         </ListItem>
-         <ListItem component="a" href="/about">
-           <ListItemIcon>
-             <InfoIcon className='text-white' />
-           </ListItemIcon>
-           <ListItemText primary="Acerca de" />
-         </ListItem>
+          <List>
+            <ListItem component="a" href="/home">
+              <ListItemIcon>
+                <HomeIcon className='text-white' />
+              </ListItemIcon>
+              <ListItemText primary="Inicio" />
+            </ListItem>
+            <ListItem component="a" href="/about">
+              <ListItemIcon>
+                <InfoIcon className='text-white' />
+              </ListItemIcon>
+              <ListItemText primary="Acerca de" />
+            </ListItem>
 
-         <ListItem component="a" href="/rules">
-           <ListItemIcon>
-             <ContactMailIcon className='text-white' />
-           </ListItemIcon>
-           <ListItemText primary="Normas de uso" />
+            <ListItem component="a" href="/rules">
+              <ListItemIcon>
+                <ContactMailIcon className='text-white' />
+              </ListItemIcon>
+              <ListItemText primary="Normas de uso" />
             </ListItem>
             {
               myPlayer?.role === 'admin' && (
@@ -177,25 +220,25 @@ const TopBar = () => {
                     <SettingsIcon className='text-white' />
                   </ListItemIcon>
                   <ListItemText primary="Administrar" />
-                </ListItem>                
+                </ListItem>
               )
             }
             {
               myPlayer?.role === 'admin' && (
                 <ListItem component="a" href="/cash-manager">
-                <ListItemIcon>
-                  <AccountBalanceWalletIcon className='text-white' />
-                </ListItemIcon>
-                <ListItemText primary="Tesorería" />
+                  <ListItemIcon>
+                    <AccountBalanceWalletIcon className='text-white' />
+                  </ListItemIcon>
+                  <ListItemText primary="Tesorería" />
                 </ListItem>
               )}
-         <ListItem component="a" href="/logout">
-           <ListItemIcon>
-             <ExitToAppIcon className='text-white' />
-           </ListItemIcon>
-           <ListItemText primary="Salir" />
-         </ListItem>
-       </List>
+            <ListItem component="a" href="/logout">
+              <ListItemIcon>
+                <ExitToAppIcon className='text-white' />
+              </ListItemIcon>
+              <ListItemText primary="Salir" />
+            </ListItem>
+          </List>
 
         </div>
       </Drawer>
